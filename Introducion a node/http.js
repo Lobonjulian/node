@@ -1,20 +1,28 @@
 const http = require("node:http");
 
-const disponiblePort = process.env.PORT ?? 3000;
+const disponiblePort = process.env.PORT ?? 1234;
 
-const server = http.createServer((req, res) => {
-  console.log("recibiendo peticion");
-  res.end("hola mundo");
-});
+const processRequest = (req, res) => {
+  if (req.url === "/") {
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.end("bienvenido a mi web");
+  } else if (req.url === "/contactos") {
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.end("hola rola");
+  } else {
+    res.statusCode = 404;
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.end("no se encontro la pagina error 404");
+  }
+};
 
-// server.listen(0, () => {
-//   console.log(
-//     `este puesto esta listo para ti http://localhost:${server.address().port}`
-//   );
-// });
+const server = http.createServer(processRequest);
 
 server.listen(disponiblePort, () => {
   console.log(
     `este puerto esta listo para ti http://localhost:${disponiblePort}`
   );
 });
+
