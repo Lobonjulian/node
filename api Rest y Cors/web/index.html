@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>test for api</title>
+  <style>
+    section{
+      border: 1px solid black;
+      padding: 10px;
+      margin: 10px;
+    }
+
+    img {
+      height: auto;
+      max-width: 100%;
+      width: 100%;
+    }
+  </style>
+  <script type="module">
+    fetch('http://localhost:3000/movies')
+    .then(res => res.json())
+    .then(movies => {
+      const html = movies.map(movies =>{
+        return `
+        <section data-id="${movies.id}">
+          <h2>${movies.title}</h2>
+          <p>${movies.description}</p>
+          <img src="${movies.poster}" alt="${movies.title}">
+
+          <button">Eliminar</button>
+        </section>`
+      }).join('')
+      document.querySelector('main').innerHTML = html
+
+      document.addEventListener('click', e => {
+        if(e.target.matches('button')) {
+          const section = e.target.closest('section')
+          const id = section.dataset.id
+
+          fetch(`http://localhost:3000/movies/${id}`, {
+            method: 'DELETE',
+            })
+            .then(res => {
+              if (res.ok) {
+                section.remove()
+              }
+            })
+          }
+        })
+      })
+  </script>
+</head>
+<body>
+  <main></main>
+</body>
+</html>
