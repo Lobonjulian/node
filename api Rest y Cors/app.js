@@ -1,14 +1,15 @@
-const express = require("express");
-const crypto = require("node:crypto");
-const cors = require("cors");
-const movies = require("./movies.json");
-const {
-  validationMovies,
-  validationpartialMovie,
-} = require("./schemas/movies");
+import express, { json } from "express";
+import { randomUUID } from "node:crypto";
+import cors from "cors";
+// import movies  from "./movies.json" assert { type: "json" };
+import { validationMovies, validationpartialMovie } from "./schemas/movies.js";
+
+import { createRequire } from "node:module";
+const  requiere = createRequire(import.meta.url);
+const movies = requiere("./movies.json");
 
 const app = express();
-app.use(express.json());
+app.use(json());
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -40,7 +41,7 @@ app.disable("x-powered-by"); // quita la cabecera x-powered-by
 app.get("/movies", (req, res) => {
   const { genre } = req.query;
   if (genre) {
-    const moviesByGenre = movies.filter((movie) =>
+    const moviesByGenre = movie.filter((movie) =>
       movie.genre.some(
         (g) => g.toLocaleLowerCase() === genre.toLocaleLowerCase()
       )
@@ -67,7 +68,7 @@ app.post("/movies", (req, res) => {
 
   // en base de datos
   const newMovie = {
-    id: crypto.randomUUID(),
+    id: randomUUID(),
     ...result.data,
   };
 
